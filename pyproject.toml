@@ -9,9 +9,13 @@ version = "1.0"
 requires-python = ">= 3.0"
 dependencies = [
   "numpy",
+  "matplotlib",
+  "opencv-python",
   "scikit-image",
   "matplotlib",
-  # "tifffile",
+  "pillow",
+  "scikit-learn",
+  "tifffile",
 ]
 authors = [
   {name = "Valeria Pais", email = "valeriarpais@gmail.com"},
