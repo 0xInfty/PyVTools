@@ -1,4 +1,6 @@
 from re import findall
+# import numpy as np
+# import operator
 
 #%% SINGLE STRING
 
@@ -72,3 +74,42 @@ def filter_by_string_must(string_list, string_must, must=True, start_on=False, e
             filtered_string_list.append(s)
             
     return filtered_string_list
+
+
+#%% SORTING LISTS OF STRINGS WITH NUMBERS
+
+# def sort_by_numbers(string_list): # CURRENTLY NOT WORKING
+
+#     numbers = [find_numbers(s) for s in string_list]
+#     n = len(numbers[0])
+
+
+#     try: numbers = np.array(numbers)
+#     except: raise ValueError("There seem to be different amount of numbers on each string")
+
+
+#     field_names = [f"a{i}" for i in range(n)]
+#     field_definitions = [(n, "<i4") for n in field_names]
+
+#     print(field_definitions)
+#     # numbers = numbers.T # a row per number position
+#     print(numbers.shape)
+#     numbers = np.array([*numbers], dtype=field_definitions)
+    
+#     print(numbers)
+#     indices = np.argsort(numbers, order=field_names)
+#     print(indices)
+#     print(indices.shape)
+
+#     sorted_list = [string_list[i] for i in indices]
+
+#     # print(numbers)
+#     # for i in range(n):
+#     #     indices = np.argsort(numbers[:,i])#-(i+1)])
+#     #     print(indices)
+#     #     numbers = numbers[indices]
+#     #     new_string_list = [string_list[i] for i in indices]
+#     #     string_list = new_string_list
+#     #     print(numbers)
+    
+#     return sorted_list
