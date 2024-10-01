@@ -5,10 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pyvtools"
 description = "Python tools"
-version = "1.1"
-requires-python = ">= 3.0"
+version = "1.2.0"
+requires-python = ">= 3.11.0"
 dependencies = [
-  "numpy",
+  "numpy<=1.26.4",
   "matplotlib",
   "opencv-python",
   "scikit-image",
