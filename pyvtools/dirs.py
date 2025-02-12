@@ -1,23 +1,19 @@
-
-from datetime import datetime
-import h5py as h5
 import json
-import matplotlib.pyplot as plt
-import numpy as np
 import os
-import re
 from socket import gethostname
 
 """
 Usage
 -----
-- Running `python config.py` allows for an interactive set up of local directories.
-- Running `import config as conf` automatically looks for the local directories, 
+- Running this script in a `python dirs.py` fashion allows for an interactive set up 
+  of local directories.
+- Same happens by running `dirs.configure_system(interactive=True);` after importing 
+  the module. For changes to be noticeable, module will need to be imported again.
+- Alternatively, running `import dirs` automatically looks for the local directories, 
   and creates options by default if the system is not recognized.
-- Global variables such as `conf.SYSTEM_HOME` will point to the automatically 
-  detected local directories.
+- Once imported, global variables such as `dirs.SYSTEM_HOME` will point to the 
+  automatically detected local directories.
 
-  
 Warnings
 --------
 - Local directories will be automatically created whenever the locally indicated 
@@ -94,14 +90,14 @@ def configure_system(interactive=False):
 
     if interactive:
 
-        answer = input(f"Is this the correct nickname for this PC? (Y/N)\n{system_dict["system_name"]}\n> ")
+        answer = input(f"Is this the correct nickname for this PC? (Y/N)\n{system_dict['system_name']}\n> ")
         answer = "y" in answer.lower()
         if answer:
             system_name = system_dict["system_name"]
         else:
             system_name = input("Choose a nickname for this PC; e.g. MYPC\n> ")
 
-        answer = input(f"Is this the correct directory for data in this PC? (Y/N)\n{system_dict["data_home"]}\n> ")
+        answer = input(f"Is this the correct directory for data in this PC? (Y/N)\n{system_dict['data_home']}\n> ")
         answer = "y" in answer.lower()
         if answer:
             data_home = system_dict["data_home"]
@@ -109,7 +105,7 @@ def configure_system(interactive=False):
             data_home = input("Copy and paste your data and datasets main directory;\n"+
                             "e.g. /home/user/data/MindEye\n> ")
 
-        answer = input(f"Is this the correct directory for computational models? (Y/N)\n{system_dict["models_home"]}\n> ")
+        answer = input(f"Is this the correct directory for computational models? (Y/N)\n{system_dict['models_home']}\n> ")
         answer = "y" in answer.lower()
         if answer:
             models_home = system_dict["models_home"]
@@ -122,7 +118,7 @@ def configure_system(interactive=False):
             models_home = input("Copy and paste your computational models directory;\n"+
                                 "e.g. /home/user/models/MindEye\n> ")
 
-        answer = input(f"Is this the correct directory for results? (Y/N)\n{system_dict["results_home"]}\n> ")
+        answer = input(f"Is this the correct directory for results? (Y/N)\n{system_dict['results_home']}\n> ")
         answer = "y" in answer.lower()
         if answer:
             results_home = system_dict["results_home"]
@@ -135,15 +131,18 @@ def configure_system(interactive=False):
             results_home = input("Copy and paste your results directory;\n"+
                                 "e.g. /home/user/results/MindEye\n> ")
         
-        system_dict = dict(
+        system_dict.update( dict(
             system_name = system_name,
             system_home = system_home,
             data_home = data_home,
             models_home = models_home,
             results_home = results_home,
-        )
+        ) )
 
-    systems_dict.update({id: system_dict})
+    if id in systems_dict.keys():
+        systems_dict[id].update( system_dict )
+    else:
+        systems_dict.update({id: system_dict})
 
     filepath = get_systems_filepath(system_home)
     with open(filepath, "w") as file:
