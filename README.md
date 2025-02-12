@@ -30,8 +30,8 @@ An alternative installation that partially uses Anaconda would involve...
    ```
    This will have executed...
    ```bash
-   conda install python=3.11.0 numpy<=1.26.4 \
-       matplotlib conda-forge::opencv scikit-image pillow scikit-learn conda-forge::tifffile
+   conda install python=3.11.0 \
+       numpy matplotlib conda-forge::opencv scikit-image pillow scikit-learn conda-forge::tifffile
    pip install pyvtools
    ```
 5. That's it! You're good to go :)
