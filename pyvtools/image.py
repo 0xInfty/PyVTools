@@ -319,7 +319,7 @@ def PSNR(image_1, image_2, byte_depth=8):
     
    return psnr
 
-def SSIM(image_1, image_2, byte_depth=8, win_size=None):    
+def SSIM(image_1, image_2, byte_depth=8, win_size=None, channel_axis=None):    
     """Structural Similarity Index Measure (SSIM) to compare two images.
     
     Parameters
@@ -343,7 +343,8 @@ def SSIM(image_1, image_2, byte_depth=8, win_size=None):
     image_1, image_2 = np.asarray(image_1), np.asarray(image_2)
     
     return structural_similarity(image_1, image_2, 
-                                 data_range=data_range, win_size=win_size)
+                                 data_range=data_range, win_size=win_size, 
+                                 channel_axis=channel_axis)
 
 def IOU(mask_1, mask_2):
     """Intersection Over Union (IOU) to compare two boolean masks.
