@@ -16,9 +16,9 @@ An alternative installation that partially uses Anaconda would involve...
 
 1. First, install some Anaconda distribution, in case you do not have any:
    https://docs.anaconda.com/anaconda/install/
-2. Then, create an Anaconda environment with Python 3.11.0
+2. Then, create an Anaconda environment with Python
    ```bash
-   conda create -n dev python=3.11.0
+   conda create -n dev python
    ```
 3. Activate the environment
    ```bash
@@ -30,7 +30,7 @@ An alternative installation that partially uses Anaconda would involve...
    ```
    This will have executed...
    ```bash
-   conda install python=3.11.0 \
+   conda install python \
        numpy matplotlib conda-forge::opencv scikit-image pillow scikit-learn conda-forge::tifffile
    pip install pyvtools
    ```
@@ -41,11 +41,6 @@ That second installation procedure is designed to be overly redundant, so please
 ### Requirements
 
 Provided installation steps are only guaranteed to work in Ubuntu 24.04.
-
-In case you are following another installation procedure, this repository requires...
-
-- Python 3.11.0
-- Numpy <= 1.26.4
 
 ## Additional information
 
