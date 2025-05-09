@@ -28,12 +28,6 @@ An alternative installation that partially uses Anaconda would involve...
    ```bash
    yes | . install.sh
    ```
-   This will have executed...
-   ```bash
-   conda install python \
-       numpy matplotlib conda-forge::opencv scikit-image pillow scikit-learn conda-forge::tifffile
-   pip install pyvtools
-   ```
 5. That's it! You're good to go :)
 
 That second installation procedure is designed to be overly redundant, so please feel free to follow your own installation procedure.
