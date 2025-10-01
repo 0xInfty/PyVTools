@@ -2,7 +2,7 @@ from re import findall
 
 #%% SINGLE STRING
 
-def find_numbers(string: str):
+def find_numbers(string):
     """Returns a list of numbers (int or float) found on a given string"""
     
     numbers = findall(r"[-+]?\d*\.\d+|[-+]?\d+", string)

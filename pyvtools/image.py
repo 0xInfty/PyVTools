@@ -17,7 +17,7 @@ IMAGE_FILE_TYPES = [*IMAGE_RAW_FILE_TYPES, *IMAGE_RGB_FILE_TYPES]
 
 #%% LOADING AND SAVING
 
-def load_rgb_image(filepath:str, dtype=np.float32):
+def load_rgb_image(filepath, dtype=np.float32):
     """Loads an RGB image as a Numpy aray
 
     Parameters
@@ -38,7 +38,7 @@ def load_rgb_image(filepath:str, dtype=np.float32):
     
     return np.array(Image.open(filepath)).astype(dtype)
 
-def load_tiff_image(filepath:str, dtype=np.float32):
+def load_tiff_image(filepath, dtype=np.float32):
     """Loads a TIFF image as a Numpy aray
 
     Parameters
@@ -59,7 +59,7 @@ def load_tiff_image(filepath:str, dtype=np.float32):
 
     return np.array(tiff.imread(filepath)).astype(dtype)
 
-def load_npy_image(filepath : str, dtype=np.float32):
+def load_npy_image(filepath, dtype=np.float32):
     """Loads an image saved as .npy into a Numpy aray
 
     Parameters
@@ -80,7 +80,7 @@ def load_npy_image(filepath : str, dtype=np.float32):
     
     return np.load(filepath).astype(dtype)
 
-def load_image(filepath:str, dtype=np.float32):
+def load_image(filepath, dtype=np.float32):
     """Loads an image as a Numpy aray
 
     Currently supported formats: jpg, png, tiff, npy
@@ -111,7 +111,7 @@ def load_image(filepath:str, dtype=np.float32):
     else:
         raise ValueError("Image extension is not supported")
 
-def save_figure(name:str, sub_name:str=None, path:str=os.getcwd(), divider="_", filetype=".png"):
+def save_figure(name, sub_name=None, path=os.getcwd(), divider="_", filetype=".png"):
 
     if not os.path.isdir(path): os.makedirs(path)
     filepath = os.path.join(path, name+divider+sub_name+filetype)
@@ -216,7 +216,7 @@ def quantise_image(image, bitdepth, dtype=np.float32):
 
 #%% IMAGE ANALYSIS
 
-def fourier_transform(image:np.ndarray):
+def fourier_transform(image):
     """Calculates the discrete fourier transform of a grayscale image.
 
     Based on https://www.geeksforgeeks.org/how-to-find-the-fourier-transform-of-an-image-using-opencv-python/
@@ -250,7 +250,7 @@ def fourier_transform(image:np.ndarray):
     
     return magnitude
 
-def hough_transform(image:np.ndarray, n_angles:int=180):
+def hough_transform(image, n_angles=180):
     """Calculates the Hough transform of a grayscale image.
 
     Based on https://scikit-image.org/docs/stable/auto_examples/edges/plot_line_hough_transform.html
@@ -408,7 +408,7 @@ def plot_image(image, title=None, dark=True, colormap="viridis",
 
     return
 
-def plot_images(*images, labels:str|list[str]=None, title:str=None,
+def plot_images(*images, labels=None, title=None,
                 dark=True, colormap="viridis", dpi=200, 
                 shape_ratio=1, **kwargs):
     """Plots several images
@@ -450,10 +450,8 @@ def plot_images(*images, labels:str|list[str]=None, title:str=None,
     
     return
 
-def plot_images_grid(*images_grid:list[np.ndarray]|np.ndarray, 
-                     columns_labels:list[str]=None, 
-                     rows_labels:list[str]=None, 
-                     rows_info:dict[str, list|np.ndarray]=None, 
+def plot_images_grid(*images_grid, 
+                     columns_labels=None, rows_labels=None, rows_info=None, 
                      dark=True, colormap="viridis", dpi=200):
     """Plots a grid of images
 
