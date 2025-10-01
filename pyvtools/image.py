@@ -8,6 +8,7 @@ from math import log10, sqrt
 from skimage.transform import hough_line#, hough_line_peaks
 from skimage.metrics import structural_similarity
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 #%% GLOBAL VARIABLES
 
@@ -406,7 +407,7 @@ def plot_image(image, title=None, dark=True, colormap="viridis",
     if dark: fig.patch.set_facecolor('k')
     ax.axis("off") # Remove axes and padding
 
-    return
+    return fig, ax
 
 def plot_images(*images, labels=None, title=None,
                 dark=True, colormap="viridis", dpi=200, 
@@ -448,7 +449,7 @@ def plot_images(*images, labels=None, title=None,
         if dark: plt.suptitle(title, fontsize="medium", color="white", y=0.98)
         else: plt.suptitle(title, fontsize="medium", y=0.98)
     
-    return
+    return fig, axes
 
 def plot_images_grid(*images_grid, 
                      columns_labels=None, rows_labels=None, rows_info=None, 
@@ -512,4 +513,46 @@ def plot_images_grid(*images_grid,
             plot_image(ims[i].detach(), label, ax=axes[i][k],
                        dark=dark, colormap=colormap, dpi=dpi)
     
-    return
+    return fig, axes
+
+#%% OTHER PLOTTING TOOLS
+
+def plot_bounding_boxes(ax, bboxes, colors=None):
+    """Draw bounding boxes on a given figure axis.
+
+    Parameters
+    ----------
+    bboxes : iterable of iterables with length 4
+        List of bounding boxes in (x0, y0, xf, yf) format.
+    colors : list of str, optional
+        Colors for each bounding box. If None, all boxes will be red.
+    """
+
+    for i, (x0, y0, xf, yf) in enumerate(bboxes):
+        color = colors[i] if colors is not None else "red"
+        rect = patches.Rectangle((x0, y0), xf-x0, yf-y0, linewidth=0.5,
+                                 edgecolor=color, facecolor="none")
+        ax.add_patch(rect)
+
+    return ax
+
+def plot_colored_labels(labels, colors):
+    """Plot a legend consisting of words on colors.
+    
+    Parameters
+    ----------
+    labels : list of str
+        The label names.
+    colors : list of str or list of tuples
+        Colors corresponding to each label.
+    """
+
+    fontsize = 14; spacing = 1.5
+    fig, ax = plt.subplots(figsize=(2.5, len(labels) * 0.3), facecolor="black")
+    for i, (label, color) in enumerate(zip(labels, colors)):
+        ax.text(0.01, 1 - i * spacing / len(labels), label,
+                fontsize=fontsize, color=color, ha="left", va="top")
+    ax.axis("off")
+    plt.show()
+    
+    return fig, ax
