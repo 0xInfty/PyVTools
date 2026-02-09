@@ -536,7 +536,7 @@ def plot_bounding_boxes(ax, bboxes, colors=None):
 
     return ax
 
-def plot_colored_labels(labels, colors):
+def plot_colored_labels(labels, colors, ax=None):
     """Plot a legend consisting of words on colors.
     
     Parameters
@@ -548,7 +548,9 @@ def plot_colored_labels(labels, colors):
     """
 
     fontsize = 14; spacing = 1.5
-    fig, ax = plt.subplots(figsize=(2.5, len(labels) * 0.3), facecolor="black")
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(2.5, len(labels) * 0.3), facecolor="black")
+    else: fig = ax.get_figure()
     for i, (label, color) in enumerate(zip(labels, colors)):
         ax.text(0.01, 1 - i * spacing / len(labels), label,
                 fontsize=fontsize, color=color, ha="left", va="top")

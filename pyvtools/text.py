@@ -1,4 +1,5 @@
 from re import findall
+from builtins import print as _print
 
 #%% SINGLE STRING
 
@@ -37,8 +38,12 @@ def filter_by_string_must(string_list, string_must, must=True, start_on=False, e
         The string, or list of strings, that must always be present or 
         always absent on each of the list elements.
     must=True : bool
-        If true, then the string must always be present. If not, the string 
-        must always be absent.
+        If true, then we will filter to strings that contain string_must. 
+        If not, then we will filter to strings that do not contain string_must.
+    start_on : bool
+        If true, then we will filter to strings that start with string_must.
+    end_on : bool
+        If true, then we will filter to strings that end with string_must.
     
     Returns
     -------
@@ -72,3 +77,53 @@ def filter_by_string_must(string_list, string_must, must=True, start_on=False, e
             filtered_string_list.append(s)
             
     return filtered_string_list
+
+#%% LOGGING
+
+class DefaultLogger:
+    """Simple logger that just prints to stdout."""
+    
+    def __init__(self, verbose=True):
+        self.verbose = verbose
+
+    def print(self, *args, **kwargs):
+        if self.verbose:
+            _print(*args, **kwargs)
+    
+    def print_section_header(self, title, char="=", width=60):
+        """Print a section header with consistent formatting."""
+        self.print("")
+        self.print(char * width)
+        self.print(title)
+        self.print(char * width)
+        self.print("")
+    
+    def print_title(self, title, char="=", width=60):
+        self.print("")
+        self.print(char*3, title, char*max(3, width - len(title) - 5))
+        self.print("")
+    
+    def print_dict(self, dictionary):
+        """Print the configuration."""
+        for k, v in dictionary.items():
+            self.print(f"> {k}: {v}")
+        self.print("")
+
+
+class TextLogger(DefaultLogger):
+    """Logger that writes to both stdout and a file."""
+    
+    def __init__(self, filepath, verbose=True):
+        self.filepath = filepath
+        self.file = open(filepath, 'w')
+        super().__init__(verbose)
+        
+    def print(self, *args, **kwargs):
+        msg = ' '.join(str(a) for a in args)
+        if self.verbose:
+            _print(msg, **kwargs)
+        self.file.write(msg + '\n')
+        self.file.flush()
+    
+    def close(self):
+        self.file.close()
