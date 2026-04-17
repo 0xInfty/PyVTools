@@ -106,7 +106,7 @@ class DefaultLogger:
     def print_dict(self, dictionary):
         """Print the configuration."""
         for k, v in dictionary.items():
-            self.print(f"> {k}: {v}")
+            self.print(f"- {k} = {v}")
         self.print("")
 
 
