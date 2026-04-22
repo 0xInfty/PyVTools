@@ -26,7 +26,8 @@ def set_style(params=None, params_to_exclude=None):
                       'ytick.color':'b0b0b0',
                       'xtick.labelcolor':'black',
                       'ytick.labelcolor':'black',
-                      'lines.markersize':8}
+                      'lines.markersize':8,
+                      'hatch.color':'white'}
     if params is not None:
         assert isinstance(params, dict), "new_params must be a dictionary"
         new_params = {**default_params, **params}
