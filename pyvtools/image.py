@@ -368,6 +368,34 @@ def IOU(mask_1, mask_2):
 
 #%% PLOTTING TOOLS
 
+def set_up_image_plot(title=None, dark=True, 
+                      figsize=(2.66, 1.7), dpi=200, ax=None):
+    """Sets up an image plot
+
+    Parameters
+    ----------
+    title : str, optional
+        Plot title. Default presents no title.
+    dark : bool, optional
+        Whether to use a black figure background or a white one. 
+        Default is True, to produce a black background.
+    figsize : tuple of floats, optional
+        Figure size in inches. Default is (2.66, 1.7) standing for 
+        height, width.
+    dpi : int, optional
+        Dots per inch. Default is 200.
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize, dpi=dpi, 
+                                gridspec_kw=dict(left=0, right=1, top=1, bottom=0))
+    else: fig = ax.get_figure()
+    if title is not None: 
+        if dark: ax.set_title(title, fontsize="small", color="w")
+        else: ax.set_title(title, fontsize="small")
+    if dark: fig.patch.set_facecolor('k')
+    ax.axis("off") # Remove axes and padding
+    return fig, ax
+
 def plot_image(image, title=None, dark=True, colormap="viridis",
                figsize=(2.66, 1.7), dpi=200, ax=None, **kwargs):
     """Plots an image
@@ -394,19 +422,9 @@ def plot_image(image, title=None, dark=True, colormap="viridis",
     **kwargs : dict, optional
         Accepts Matplotlib's `imshow` kwargs.
     """
-
-    if ax is None: 
-        fig, ax = plt.subplots(figsize=figsize, dpi=dpi, 
-                               gridspec_kw=dict(left=0, right=1, top=1, bottom=0))
-    else: fig = ax.get_figure()
-
+    fig, ax = set_up_image_plot(title=title, dark=dark, 
+                                figsize=figsize, dpi=dpi)
     ax.imshow(image, cmap=colormap, **kwargs)
-    if title is not None: 
-        if dark: ax.set_title(title, fontsize="small", color="w")
-        else: ax.set_title(title, fontsize="small")
-    if dark: fig.patch.set_facecolor('k')
-    ax.axis("off") # Remove axes and padding
-
     return fig, ax
 
 def plot_images(*images, labels=None, title=None,
@@ -517,7 +535,7 @@ def plot_images_grid(*images_grid,
 
 #%% OTHER PLOTTING TOOLS
 
-def plot_bounding_boxes(ax, bboxes, colors=None):
+def plot_bounding_boxes(ax, bboxes, colors=None, do_fill=False, alpha=0.4):
     """Draw bounding boxes on a given figure axis.
 
     Parameters
@@ -526,12 +544,17 @@ def plot_bounding_boxes(ax, bboxes, colors=None):
         List of bounding boxes in (x0, y0, xf, yf) format.
     colors : list of str, optional
         Colors for each bounding box. If None, all boxes will be red.
+    do_fill : bool, optional
+        Whether to fill the bounding boxes with the color. Default is False.
+    alpha : float, optional
+        Alpha value for the bounding boxes. Default is 0.1.
     """
 
     for i, (x0, y0, xf, yf) in enumerate(bboxes):
         color = colors[i] if colors is not None else "red"
         rect = patches.Rectangle((x0, y0), xf-x0, yf-y0, linewidth=0.5,
-                                 edgecolor=color, facecolor="none")
+            edgecolor=color, facecolor=color if do_fill else "none", 
+            alpha=alpha if do_fill else 1)
         ax.add_patch(rect)
 
     return ax
