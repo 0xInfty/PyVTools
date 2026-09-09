@@ -98,8 +98,8 @@ def fit_linear(
     rsq = r_squared(Y, m * X + b)
 
     return LinearFitResult(
-        slope=ufloat(m, dm),
-        intercept=ufloat(b, db),
+        slope=ufloat(m, max(dm, np.finfo(float).eps)),
+        intercept=ufloat(b, max(db, np.finfo(float).eps)),
         rsq=rsq,
     )
 
@@ -159,7 +159,7 @@ def fit_nonlinear(
     )
     rsq = r_squared(Y, fitfunction(X, *parameters))
     fit_parameters = tuple(
-        ufloat(value, sqrt(covariance[i, i]))
+        ufloat(value, max(sqrt(covariance[i, i]), np.finfo(float).eps))
         for i, value in enumerate(parameters)
     )
 

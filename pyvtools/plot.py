@@ -234,10 +234,10 @@ def plot_linear_fit(
     ]
     for i, (label, parameter, digits, units, scale) in enumerate(annotations):
         ax.annotate(
-            f"{label} = {vtext.format_value_latex(
+            label + " = " + vtext.format_value_latex(
                 parameter.nominal_value, parameter.std_dev, 
                 error_digits=digits, units=units, 
-                string_scale=scale, one_point_scale=True)}",
+                string_scale=scale, one_point_scale=True),
             (text_position[0], vertical[i]),
             xycoords="axes fraction",
         )
@@ -291,10 +291,10 @@ def plot_nonlinear_fit(
     vertical = _annotation_positions(text_position, n + 1)
     for i, parameter in enumerate(result.parameters):
         ax.annotate(
-            f"$a_{i}$ = {vtext.format_value_latex(
+            f"$a_{i}$ = "+ vtext.format_value_latex(
                 parameter.nominal_value, parameter.std_dev, 
                 error_digits=par_error_digits[i], units=par_units[i], 
-                string_scale=par_string_scale[i], one_point_scale=True)}",
+                string_scale=par_string_scale[i], one_point_scale=True),
             (text_position[0], vertical[i]),
             xycoords="axes fraction",
         )
