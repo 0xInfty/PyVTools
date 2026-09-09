@@ -1,5 +1,13 @@
+from typing import Optional, Sequence, Tuple, Union
+
 from matplotlib import ticker
 import matplotlib.pyplot as plt
+import numpy as np
+
+import pyvtools.text as vtext
+from pyvtools.algebra import LinearFitResult, NonlinearFitResult
+
+#%% GENERAL STYLE
 
 def set_style(params=None, params_to_exclude=None):
     """Sets academic style
@@ -136,3 +144,169 @@ def add_style(fig=None, new_figure=False, **kwargs):
     plt.show()
 
     return fig
+
+#%% PLOTTING FITS
+
+def _annotation_positions(
+    text_position: Tuple[float, Union[float, str]],
+    count: int,
+) -> list[float]:
+    horizontal, vertical = text_position
+    if vertical == "up":
+        return [0.9 - 0.08 * i for i in range(count)]
+    if vertical == "down":
+        return [0.05 + 0.08 * i for i in range(count)]
+    if vertical <= 0.08:
+        step = 0.08
+    else:
+        step = -0.08
+    return [vertical + step * i for i in range(count)]
+
+def _plot_data(
+    ax,
+    X: np.ndarray,
+    Y: np.ndarray,
+    dY: Optional[np.ndarray],
+    plot_some_errors: Tuple[bool, int],
+) -> None:
+    if dY is None:
+        ax.plot(X, Y, "b.", zorder=0)
+        return
+
+    errorevery = 1
+    if plot_some_errors[0]:
+        errorevery = max(1, len(Y) // plot_some_errors[1])
+
+    ax.errorbar(
+        X, Y, yerr=dY,
+        linestyle="", marker=".", 
+        color="b", ecolor="b",
+        elinewidth=1.5, errorevery=errorevery,
+        zorder=0,
+    )
+
+def plot_linear_fit(
+    X: np.ndarray,
+    Y: np.ndarray,
+    result: LinearFitResult,
+    dY: Optional[np.ndarray] = None,
+    ax=None,
+    plot_some_errors: Tuple[bool, int] = (False, 20),
+    text_position: Optional[Tuple[float, Union[float, str]]] = None,
+    mb_units: Tuple[str, str] = ("", ""),
+    mb_string_scale: Tuple[bool, bool] = (False, False),
+    mb_error_digits: Tuple[int, int] = (3, 2),
+    rsq_decimal_digits: int = 3,
+    show: bool = True,
+):
+    """Plot data and a linear fit result."""
+    X = np.asarray(X, dtype=float)
+    Y = np.asarray(Y, dtype=float)
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    _plot_data(ax, X, Y, dY, plot_some_errors)
+    m = result.slope.nominal_value
+    b = result.intercept.nominal_value
+    ax.plot(X, m * X + b, "r-", zorder=100)
+    ax.legend(["Datos", "Ajuste"])
+
+    if text_position is None:
+        text_position = (0.02, "up" if m > 1 else "down")
+
+    vertical = _annotation_positions(text_position, 3)
+    annotations = [
+        (
+            "m",
+            result.slope,
+            mb_error_digits[0],
+            mb_units[0],
+            mb_string_scale[0],
+        ),
+        (
+            "b",
+            result.intercept,
+            mb_error_digits[1],
+            mb_units[1],
+            mb_string_scale[1],
+        ),
+    ]
+    for i, (label, parameter, digits, units, scale) in enumerate(annotations):
+        ax.annotate(
+            f"{label} = {vtext.format_value_latex(
+                parameter.nominal_value, parameter.std_dev, 
+                error_digits=digits, units=units, 
+                string_scale=scale, one_point_scale=True)}",
+            (text_position[0], vertical[i]),
+            xycoords="axes fraction",
+        )
+
+    rsq_format = r"$R^2$ = {:." + str(rsq_decimal_digits) + "f}"
+    ax.annotate(
+        rsq_format.format(result.rsq),
+        (text_position[0], vertical[-1]),
+        xycoords="axes fraction",
+    )
+
+    if show:
+        plt.show()
+
+    return ax
+
+
+def plot_nonlinear_fit(
+    X: np.ndarray,
+    Y: np.ndarray,
+    fitfunction,
+    result: NonlinearFitResult,
+    dY: Optional[np.ndarray] = None,
+    ax=None,
+    plot_some_errors: Tuple[bool, int] = (False, 20),
+    text_position: Tuple[float, Union[float, str]] = (0.02, "up"),
+    par_units: Optional[Sequence[str]] = None,
+    par_string_scale: Optional[Sequence[bool]] = None,
+    par_error_digits: Optional[Sequence[int]] = None,
+    rsq_decimal_digits: int = 3,
+    show: bool = True,
+):
+    """Plot data and a nonlinear fit result."""
+    X = np.asarray(X, dtype=float)
+    Y = np.asarray(Y, dtype=float)
+    n = len(result.parameters)
+
+    if ax is None:
+        _, ax = plt.subplots()
+
+    _plot_data(ax, X, Y, dY, plot_some_errors)
+    x_fit = np.linspace(min(X), max(X), 500)
+    parameters = tuple(p.nominal_value for p in result.parameters)
+    ax.plot(x_fit, fitfunction(x_fit, *parameters), "r-", zorder=100)
+    ax.legend(["Datos", "Ajuste"])
+
+    par_units = list(par_units or [""] * n)
+    par_string_scale = list(par_string_scale or [False] * n)
+    par_error_digits = list(par_error_digits or [3] * n)
+
+    vertical = _annotation_positions(text_position, n + 1)
+    for i, parameter in enumerate(result.parameters):
+        ax.annotate(
+            f"$a_{i}$ = {vtext.format_value_latex(
+                parameter.nominal_value, parameter.std_dev, 
+                error_digits=par_error_digits[i], units=par_units[i], 
+                string_scale=par_string_scale[i], one_point_scale=True)}",
+            (text_position[0], vertical[i]),
+            xycoords="axes fraction",
+        )
+
+    rsq_format = r"$R^2$ = {:." + str(rsq_decimal_digits) + "f}"
+    ax.annotate(
+        rsq_format.format(result.rsq),
+        (text_position[0], vertical[-1]),
+        xycoords="axes fraction",
+    )
+
+    if show:
+        plt.show()
+
+    return ax

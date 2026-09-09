@@ -14,7 +14,9 @@ dependencies = [
   "scikit-image",
   "pillow",
   "scikit-learn",
+  "scipy",
   "tifffile",
+  "uncertainties",
 ]
 authors = [
   {name = "Valeria Pais", email = "valeriarpais@gmail.com"},
