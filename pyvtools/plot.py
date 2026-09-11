@@ -9,33 +9,34 @@ from pyvtools.algebra import LinearFitResult, NonlinearFitResult
 
 #%% GENERAL STYLE
 
-def set_style(params=None, params_to_exclude=None):
-    """Sets academic style
-    
-    Source: https://github.com/0xInfty/PyMeepPlasmonics/blob/master/v_plot.py
-    """
-    
-    default_params = {'text.usetex': False, 
-                      'font.family':'serif',
-                      'font.sans-serif': ['MS Reference Sans Serif', 'sans-serif'], 
-                      'mathtext.fontset': 'cm', # Computer Modern
-                      'font.weight':500,
-                      'figure.titlesize':13,
-                      'axes.titlesize':12,
-                      'axes.labelsize':11,
-                      'legend.fontsize':11,
-                      'xtick.labelsize':10,
-                      'ytick.labelsize':10,
-                      'xtick.minor.visible':True,
-                      'ytick.minor.visible':True,
-                      'grid.alpha':0.4,
-                      'axes.grid':True,
-                      'xtick.color':'b0b0b0',
-                      'ytick.color':'b0b0b0',
-                      'xtick.labelcolor':'black',
-                      'ytick.labelcolor':'black',
-                      'lines.markersize':8,
-                      'hatch.color':'white'}
+DEFAULT_TEXT_PARAMS = {
+    'text.usetex': False, 
+    'font.family':'serif',
+    'font.sans-serif': ['MS Reference Sans Serif', 'sans-serif', 'DejaVu Sans'], 
+    'mathtext.fontset': 'cm', # Computer Modern
+    'font.weight':500,
+    'figure.titlesize':13,
+    'axes.titlesize':12,
+    'axes.labelsize':11,
+    'legend.fontsize':11,
+    'xtick.labelsize':10,
+    'ytick.labelsize':10
+}
+DEFAULT_STYLE_PARAMS = {
+    **DEFAULT_TEXT_PARAMS,
+    'xtick.minor.visible':True,
+    'ytick.minor.visible':True,
+    'grid.alpha':0.4,
+    'axes.grid':True,
+    'xtick.color':'b0b0b0',
+    'ytick.color':'b0b0b0',
+    'xtick.labelcolor':'black',
+    'ytick.labelcolor':'black',
+    'lines.markersize':8,
+    'hatch.color':'white'
+}
+
+def _update_rcParams(default_params, params=None, params_to_exclude=None):
     if params is not None:
         assert isinstance(params, dict), "new_params must be a dictionary"
         new_params = {**default_params, **params}
@@ -47,6 +48,24 @@ def set_style(params=None, params_to_exclude=None):
         for param in params_to_exclude:
             new_params.pop(param)
     plt.rcParams.update(new_params)
+
+def set_font(params=None, params_to_exclude=None):
+    """Sets font style
+    
+    Parameters
+    ----------
+    params : dict, optional
+        Dictionary of parameters to set.
+    params_to_exclude : list, optional
+    """
+    _update_rcParams(DEFAULT_TEXT_PARAMS, params, params_to_exclude)
+
+def set_style(params=None, params_to_exclude=None):
+    """Sets academic style
+    
+    Source: https://github.com/0xInfty/PyMeepPlasmonics/blob/master/v_plot.py
+    """
+    _update_rcParams(DEFAULT_STYLE_PARAMS, params, params_to_exclude)
 
 def reset_style():
     """Resets style to default"""
